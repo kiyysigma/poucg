@@ -2,78 +2,112 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>MiniPet</title>
+<title>MyPet Life</title>
 <style>
-  body {
-    font-family: Arial;
-    text-align: center;
-    background: #f2f2f2;
-  }
-  .pet {
-    font-size: 100px;
-  }
-  button {
-    padding: 10px 15px;
-    margin: 5px;
-    font-size: 16px;
-  }
+body {
+  font-family: Arial;
+  text-align: center;
+  background: #dff6ff;
+}
+.pet {
+  font-size: 120px;
+}
+button {
+  padding: 10px;
+  margin: 4px;
+  font-size: 15px;
+}
+.panel {
+  background: white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+}
 </style>
 </head>
 <body>
 
-<h1>🐾 MiniPet 🐾</h1>
+<h1>🐾 MyPet Life 🐾</h1>
 
 <div class="pet" id="pet">😄</div>
 
-<p>Lapar: <span id="hunger">100</span></p>
-<p>Bahagia: <span id="happy">100</span></p>
-<p>Energi: <span id="energy">100</span></p>
+<div class="panel">
+<p>Lapar: <span id="hunger"></span></p>
+<p>Bahagia: <span id="happy"></span></p>
+<p>Energi: <span id="energy"></span></p>
+<p>Bersih: <span id="clean"></span></p>
+<p>💰 Koin: <span id="coin"></span></p>
+</div>
 
+<div class="panel">
 <button onclick="feed()">🍔 Makan</button>
 <button onclick="play()">🎮 Main</button>
 <button onclick="sleep()">😴 Tidur</button>
+<button onclick="bath()">🧼 Mandi</button>
+</div>
 
 <script>
-let hunger = 100;
-let happy = 100;
-let energy = 100;
+let data = JSON.parse(localStorage.getItem("mypet")) || {
+  hunger: 100,
+  happy: 100,
+  energy: 100,
+  clean: 100,
+  coin: 50
+};
 
-function updateStatus() {
-  document.getElementById("hunger").innerText = hunger;
-  document.getElementById("happy").innerText = happy;
-  document.getElementById("energy").innerText = energy;
+function save() {
+  localStorage.setItem("mypet", JSON.stringify(data));
+}
 
-  const pet = document.getElementById("pet");
-  if (hunger < 30 || energy < 30) pet.innerText = "😢";
-  else if (happy > 70) pet.innerText = "😄";
+function update() {
+  hunger.innerText = data.hunger;
+  happy.innerText = data.happy;
+  energy.innerText = data.energy;
+  clean.innerText = data.clean;
+  coin.innerText = data.coin;
+
+  let pet = document.getElementById("pet");
+  if (data.hunger < 30 || data.clean < 30) pet.innerText = "🤢";
+  else if (data.energy < 30) pet.innerText = "😴";
+  else if (data.happy > 70) pet.innerText = "😄";
   else pet.innerText = "😐";
+
+  save();
 }
 
 function feed() {
-  hunger = Math.min(100, hunger + 20);
-  updateStatus();
+  data.hunger = Math.min(100, data.hunger + 20);
+  data.coin += 2;
+  update();
 }
 
 function play() {
-  happy = Math.min(100, happy + 20);
-  energy = Math.max(0, energy - 10);
-  updateStatus();
+  data.happy = Math.min(100, data.happy + 15);
+  data.energy = Math.max(0, data.energy - 10);
+  data.coin += 5;
+  update();
 }
 
 function sleep() {
-  energy = Math.min(100, energy + 30);
-  hunger = Math.max(0, hunger - 10);
-  updateStatus();
+  data.energy = Math.min(100, data.energy + 25);
+  data.hunger = Math.max(0, data.hunger - 10);
+  update();
 }
 
-// status turun otomatis
-setInterval(() => {
-  hunger = Math.max(0, hunger - 1);
-  happy = Math.max(0, happy - 1);
-  updateStatus();
-}, 3000);
+function bath() {
+  data.clean = Math.min(100, data.clean + 30);
+  data.coin -= 2;
+  update();
+}
 
-updateStatus();
+setInterval(() => {
+  data.hunger = Math.max(0, data.hunger - 1);
+  data.happy = Math.max(0, data.happy - 1);
+  data.clean = Math.max(0, data.clean - 1);
+  update();
+}, 4000);
+
+update();
 </script>
 
 </body>
