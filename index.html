@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>MiniPet</title>
+<style>
+  body {
+    font-family: Arial;
+    text-align: center;
+    background: #f2f2f2;
+  }
+  .pet {
+    font-size: 100px;
+  }
+  button {
+    padding: 10px 15px;
+    margin: 5px;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<h1>🐾 MiniPet 🐾</h1>
+
+<div class="pet" id="pet">😄</div>
+
+<p>Lapar: <span id="hunger">100</span></p>
+<p>Bahagia: <span id="happy">100</span></p>
+<p>Energi: <span id="energy">100</span></p>
+
+<button onclick="feed()">🍔 Makan</button>
+<button onclick="play()">🎮 Main</button>
+<button onclick="sleep()">😴 Tidur</button>
+
+<script>
+let hunger = 100;
+let happy = 100;
+let energy = 100;
+
+function updateStatus() {
+  document.getElementById("hunger").innerText = hunger;
+  document.getElementById("happy").innerText = happy;
+  document.getElementById("energy").innerText = energy;
+
+  const pet = document.getElementById("pet");
+  if (hunger < 30 || energy < 30) pet.innerText = "😢";
+  else if (happy > 70) pet.innerText = "😄";
+  else pet.innerText = "😐";
+}
+
+function feed() {
+  hunger = Math.min(100, hunger + 20);
+  updateStatus();
+}
+
+function play() {
+  happy = Math.min(100, happy + 20);
+  energy = Math.max(0, energy - 10);
+  updateStatus();
+}
+
+function sleep() {
+  energy = Math.min(100, energy + 30);
+  hunger = Math.max(0, hunger - 10);
+  updateStatus();
+}
+
+// status turun otomatis
+setInterval(() => {
+  hunger = Math.max(0, hunger - 1);
+  happy = Math.max(0, happy - 1);
+  updateStatus();
+}, 3000);
+
+updateStatus();
+</script>
+
+</body>
+</html>
